@@ -7,9 +7,11 @@ export default function Header({
   onSearchSubmit,
   onOpenAddVendor,
   onOpenAddPurchase,
+  onOpenAddProduct,
   onOpenImportExport,
   onOpenPriceAlerts,
   onOpenSmartParser,
+  onOpenPriceList,
   activeAlertsCount
 }) {
   const handleKeyDown = (e) => {
