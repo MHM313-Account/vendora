@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, UserPlus, ShoppingBag, Bell, FileSpreadsheet, Sparkles } from 'lucide-react';
+import { Search, UserPlus, ShoppingBag, Bell, FileSpreadsheet, Sparkles, Menu } from 'lucide-react';
 
 export default function Header({ 
   globalSearch, 
@@ -12,6 +12,7 @@ export default function Header({
   onOpenPriceAlerts,
   onOpenSmartParser,
   onOpenPriceList,
+  onOpenMobileMenu,
   activeAlertsCount
 }) {
   const handleKeyDown = (e) => {
@@ -21,28 +22,55 @@ export default function Header({
   };
 
   return (
-    <header className="h-16 bg-slate-900/95 backdrop-blur-md border-b border-slate-700/80 px-6 flex items-center justify-between gap-4 sticky top-0 z-30 shadow-sm">
+    <header className="h-16 bg-slate-900/95 backdrop-blur-md border-b border-slate-700/80 px-3 md:px-6 flex items-center justify-between gap-2 md:gap-4 sticky top-0 z-30 shadow-sm">
+      {/* Mobile Menu Hamburger */}
+      <button
+        onClick={onOpenMobileMenu}
+        className="p-2 -ml-1 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 md:hidden flex-shrink-0 transition-colors"
+        title="مینو کھولیں"
+      >
+        <Menu className="w-5 h-5 text-indigo-400" />
+      </button>
+
       {/* Global Quick Search */}
       <div className="flex-1 max-w-md relative">
-        <Search className="w-4 h-4 text-slate-300 absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <Search className="w-4 h-4 text-slate-300 absolute left-3 md:left-3.5 top-1/2 -translate-y-1/2" />
         <input
           type="text"
           value={globalSearch}
           onChange={(e) => setGlobalSearch(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="سرچ کریں: CapCut, Claude, یا وینڈر کا نام..."
-          className="w-full bg-slate-800 border border-slate-600 focus:border-indigo-400 rounded-xl pl-10 pr-20 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 transition-all"
+          placeholder="سرچ: CapCut, Claude, یا وینڈر..."
+          className="w-full bg-slate-800 border border-slate-600 focus:border-indigo-400 rounded-xl pl-9 md:pl-10 pr-14 md:pr-20 py-1.5 md:py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 transition-all"
         />
         <button
           onClick={onSearchSubmit}
-          className="absolute right-1.5 top-1/2 -translate-y-1/2 px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-[11px] font-bold border border-slate-600 transition-colors"
+          className="absolute right-1 md:right-1.5 top-1/2 -translate-y-1/2 px-2 py-0.5 md:px-2.5 md:py-1 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-[10px] md:text-[11px] font-bold border border-slate-600 transition-colors"
         >
-          انٹر ↵
+          ↵
         </button>
       </div>
 
-      {/* Action Tools & Quick Buttons */}
-      <div className="flex items-center gap-2">
+      {/* Mobile Quick Action Buttons */}
+      <div className="flex md:hidden items-center gap-1.5 flex-shrink-0">
+        <button
+          onClick={onOpenAddPurchase}
+          className="p-2 rounded-xl bg-emerald-600/20 text-emerald-300 border border-emerald-500/40"
+          title="خریداری درج کریں"
+        >
+          <ShoppingBag className="w-4 h-4" />
+        </button>
+        <button
+          onClick={onOpenAddVendor}
+          className="p-2 rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
+          title="نیا وینڈر شامل کریں"
+        >
+          <UserPlus className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Desktop Action Tools & Quick Buttons */}
+      <div className="hidden md:flex items-center gap-2">
         {/* Price List Generator */}
         {onOpenPriceList && (
           <button

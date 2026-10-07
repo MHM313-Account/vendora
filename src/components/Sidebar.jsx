@@ -14,10 +14,18 @@ import {
   ShieldCheck,
   TrendingUp,
   KeyRound,
-  Sparkles
+  Sparkles,
+  X
 } from 'lucide-react';
 
-export default function Sidebar({ currentTab, setCurrentTab, onOpenSettings, onOpenPriceList }) {
+export default function Sidebar({ 
+  currentTab, 
+  setCurrentTab, 
+  onOpenSettings, 
+  onOpenPriceList,
+  isMobileOpen = false,
+  onCloseMobile
+}) {
   const sections = [
     {
       title: 'بنیادی کنٹرول (Overview)',
@@ -54,64 +62,92 @@ export default function Sidebar({ currentTab, setCurrentTab, onOpenSettings, onO
   ];
 
   return (
-    <aside className="w-64 bg-slate-900/95 border-r border-slate-800 flex flex-col flex-shrink-0 select-none">
-      {/* Brand Header */}
-      <div className="p-4 border-b border-slate-800/80 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white font-extrabold text-xl tracking-wider">
-          V
-        </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="font-extrabold text-base text-white tracking-tight">Vendora</h1>
-            <span className="px-1.5 py-0.2 text-[9px] font-bold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 rounded border border-indigo-500/30">
-              Pro
-            </span>
-          </div>
-          <p className="text-[11px] text-slate-400 font-medium">Supplier Intelligence</p>
-        </div>
-      </div>
+    <>
+      {/* Mobile Drawer Backdrop */}
+      {isMobileOpen && (
+        <div 
+          onClick={onCloseMobile}
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 md:hidden transition-opacity duration-200"
+        />
+      )}
 
-      {/* Navigation Menu */}
-      <nav className="flex-1 p-3 space-y-4 overflow-y-auto">
-        {sections.map((sec, secIdx) => (
-          <div key={secIdx} className="space-y-1">
-            <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              {sec.title}
+      {/* Main Sidebar */}
+      <aside className={`
+        fixed md:static inset-y-0 left-0 z-50 w-72 md:w-64 bg-slate-900 border-r border-slate-800 
+        flex flex-col flex-shrink-0 select-none transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none
+        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
+        {/* Brand Header */}
+        <div className="p-4 border-b border-slate-800/80 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white font-extrabold text-xl tracking-wider">
+              V
             </div>
-
-            {sec.items.map((item) => {
-              const Icon = item.icon;
-              const isActive = currentTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setCurrentTab(item.id)}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition-all duration-150 ${
-                    isActive
-                      ? 'bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-600/30'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-                  } ${item.highlight && !isActive ? 'border border-indigo-500/20 bg-indigo-950/20 text-indigo-200' : ''}`}
-                >
-                  <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-white' : item.highlight ? 'text-indigo-400' : 'text-slate-400'}`} />
-                  <div className="flex-1 truncate">
-                    <div className="text-xs leading-tight flex items-center justify-between">
-                      <span className="font-medium">{item.label}</span>
-                      {item.highlight && !isActive && (
-                        <span className="text-[9px] bg-indigo-500/20 text-indigo-300 px-1.5 py-0.2 rounded font-semibold">
-                          Main
-                        </span>
-                      )}
-                    </div>
-                    <div className={`text-[10px] truncate ${isActive ? 'text-indigo-100' : 'text-slate-400'}`}>
-                      {item.sub}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="font-extrabold text-base text-white tracking-tight">Vendora</h1>
+                <span className="px-1.5 py-0.2 text-[9px] font-bold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 rounded border border-indigo-500/30">
+                  Pro
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 font-medium">Supplier Intelligence</p>
+            </div>
           </div>
-        ))}
-      </nav>
+
+          {/* Close button on mobile */}
+          <button
+            onClick={onCloseMobile}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors md:hidden"
+            title="بند کریں"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Navigation Menu */}
+        <nav className="flex-1 p-3 space-y-4 overflow-y-auto">
+          {sections.map((sec, secIdx) => (
+            <div key={secIdx} className="space-y-1">
+              <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                {sec.title}
+              </div>
+
+              {sec.items.map((item) => {
+                const Icon = item.icon;
+                const isActive = currentTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setCurrentTab(item.id);
+                      if (onCloseMobile) onCloseMobile();
+                    }}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition-all duration-150 ${
+                      isActive
+                        ? 'bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-600/30'
+                        : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                    } ${item.highlight && !isActive ? 'border border-indigo-500/20 bg-indigo-950/20 text-indigo-200' : ''}`}
+                  >
+                    <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-white' : item.highlight ? 'text-indigo-400' : 'text-slate-400'}`} />
+                    <div className="flex-1 truncate">
+                      <div className="text-xs leading-tight flex items-center justify-between">
+                        <span className="font-medium">{item.label}</span>
+                        {item.highlight && !isActive && (
+                          <span className="text-[9px] bg-indigo-500/20 text-indigo-300 px-1.5 py-0.2 rounded font-semibold">
+                            Main
+                          </span>
+                        )}
+                      </div>
+                      <div className={`text-[10px] truncate ${isActive ? 'text-indigo-100' : 'text-slate-400'}`}>
+                        {item.sub}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+        </nav>
 
       {/* Quick Price List Button & Settings */}
       <div className="p-3 border-t border-slate-800/60 space-y-1">
@@ -145,5 +181,6 @@ export default function Sidebar({ currentTab, setCurrentTab, onOpenSettings, onO
         </p>
       </div>
     </aside>
+    </>
   );
 }

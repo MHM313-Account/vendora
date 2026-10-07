@@ -30,9 +30,11 @@ import PriceListGeneratorModal from './components/PriceListGeneratorModal';
 import AddSaleModal from './components/AddSaleModal';
 import WarrantyClaimModal from './components/WarrantyClaimModal';
 import ReplacementChainModal from './components/ReplacementChainModal';
+import { LayoutDashboard, Scale, TrendingUp, KeyRound, Menu } from 'lucide-react';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState('dashboard');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
   const [vendors, setVendors] = useState([]);
   const [products, setProducts] = useState([]);
@@ -256,16 +258,18 @@ export default function App() {
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-slate-900 text-slate-100 font-['Plus_Jakarta_Sans',sans-serif]">
-      {/* Left Sidebar */}
+      {/* Left Sidebar (Desktop docked, Mobile off-canvas drawer) */}
       <Sidebar 
         currentTab={currentTab} 
         setCurrentTab={setCurrentTab} 
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenPriceList={() => setIsPriceListOpen(true)}
+        isMobileOpen={isMobileMenuOpen}
+        onCloseMobile={() => setIsMobileMenuOpen(false)}
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden">
+      <div className="flex-1 flex flex-col h-full overflow-hidden relative">
         {/* Top Header */}
         <Header 
           globalSearch={globalSearch}
@@ -281,11 +285,12 @@ export default function App() {
           onOpenPriceAlerts={() => setIsPriceAlertsOpen(true)}
           onOpenSmartParser={() => setIsSmartParserOpen(true)}
           onOpenPriceList={() => setIsPriceListOpen(true)}
+          onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
           activeAlertsCount={dashboardData?.stats?.activePriceAlertsCount || 0}
         />
 
         {/* Dynamic Views */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8">
+        <main className="flex-1 overflow-y-auto p-3.5 md:p-8 pb-24 md:pb-12">
           <div className="max-w-7xl mx-auto pb-12">
             {currentTab === 'dashboard' && (
               <DashboardView 
@@ -399,6 +404,65 @@ export default function App() {
             )}
           </div>
         </main>
+
+        {/* Sleek Mobile Bottom Navigation Bar */}
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-slate-950/95 backdrop-blur-xl border-t border-slate-800 flex items-center justify-around z-30 px-2 shadow-2xl">
+          <button
+            onClick={() => setCurrentTab('dashboard')}
+            className={`flex flex-col items-center justify-center flex-1 py-1 transition-all ${
+              currentTab === 'dashboard' 
+                ? 'text-indigo-400 font-bold scale-105' 
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <LayoutDashboard className="w-5 h-5 mb-0.5" />
+            <span className="text-[10px]">ڈیش بورڈ</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentTab('comparison')}
+            className={`flex flex-col items-center justify-center flex-1 py-1 transition-all ${
+              currentTab === 'comparison' 
+                ? 'text-indigo-400 font-bold scale-105' 
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Scale className="w-5 h-5 mb-0.5" />
+            <span className="text-[10px]">ریٹس</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentTab('sales')}
+            className={`flex flex-col items-center justify-center flex-1 py-1 transition-all ${
+              currentTab === 'sales' 
+                ? 'text-indigo-400 font-bold scale-105' 
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <TrendingUp className="w-5 h-5 mb-0.5" />
+            <span className="text-[10px]">سیلز</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentTab('vault')}
+            className={`flex flex-col items-center justify-center flex-1 py-1 transition-all ${
+              currentTab === 'vault' 
+                ? 'text-indigo-400 font-bold scale-105' 
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <KeyRound className="w-5 h-5 mb-0.5" />
+            <span className="text-[10px]">اسٹاک</span>
+          </button>
+
+          <button
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-white transition-colors"
+          >
+            <Menu className="w-5 h-5 mb-0.5" />
+            <span className="text-[10px]">مینو ☰</span>
+          </button>
+        </nav>
       </div>
 
       {/* MODALS */}
